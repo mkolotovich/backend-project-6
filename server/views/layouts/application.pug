@@ -3,21 +3,20 @@ include ../mixins/forms.pug
 doctype html
 html(lang="en")
   head
-    title Hexlet Fastify Boilerplate
+    title Hexlet Task Manager
     script(src=assetPath('main.js'))
     link(href=assetPath('main.css') rel="stylesheet")
     meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
   body.d-flex.flex-column.min-vh-100
-    nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb-3
+    nav.navbar.navbar-expand-md.navbar-dark.bg-dark.mb-4
       .container-fluid
         a.navbar-brand(href=route('root'))= t('appName')
         button.navbar-toggler(data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent")
           span.navbar-toggler-icon
         .collapse.navbar-collapse(id="navbarToggleExternalContent")
-          .container-fluid
-            ul.navbar-nav.mr-auto
-              li.nav-item
-                a.nav-link(href=route('users'))= t('layouts.application.users')
+          ul.navbar-nav.me-auto.mb-2.mb-md-0
+            li.nav-item
+              a.nav-link(href=route('users'))= t('layouts.application.users')
           ul.navbar-nav
             if isAuthenticated()
               li.nav-item
@@ -27,13 +26,12 @@ html(lang="en")
                 a.nav-link(href=route('newSession'))= t('layouts.application.signIn')
               li.nav-item
                 a.nav-link(href=route('newUser'))= t('layouts.application.signUp')
-    .container.wrapper.flex-grow-1
+    main.container.wrapper.flex-grow-1    
 
       each messages, type in reply.flash() || []
         each message in messages
           div.alert(class=`alert-${getAlertClass(type)}`)= message
 
-      h1.my-4
         block header
       block content
 

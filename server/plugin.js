@@ -30,7 +30,7 @@ const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
 const mode = process.env.NODE_ENV || 'development';
 // const isDevelopment = mode === 'development';
-
+console.log(mode);
 const setUpViews = (app) => {
   const helpers = getHelpers(app);
   app.register(pointOfView, {

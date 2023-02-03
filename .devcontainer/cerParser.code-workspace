@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "../../../cerParser"
+		},
+		{
+			"path": "../../../xmlParser"
+		},
+		{
+			"path": "../../../documestos/documestos"
+		},
+		{
+			"path": "../../../pythonScript"
+		},
+		{
+			"path": "../../../xmlParserDocx"
+		},
+		{
+			"path": "../../../xmlParserPdf"
+		},
+		{
+			"path": "../../../xmlGenerator"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {}
+}

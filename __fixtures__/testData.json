@@ -18,5 +18,19 @@
       "lastName": "hodkiewicz",
       "password": "RLJvaIgPOnX5r03"
     }
+  }, 
+  "statuses": {
+    "new": {
+      "id": 1,
+      "name": "new"
+    },
+    "existing": {
+      "id": 2,
+      "name": "in work"
+    },
+    "updated": {
+      "id": 2,
+      "name": "done"
+    }
   }
 }

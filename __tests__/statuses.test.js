@@ -1,13 +1,11 @@
 // @ts-check
 
-import _ from 'lodash';
 import fastify from 'fastify';
 
 import init from '../server/plugin.js';
-import encrypt from '../server/lib/secure.cjs';
 import { getTestData, prepareData } from './helpers/index.js';
 
-describe('test users CRUD', () => {
+describe('test statuses CRUD', () => {
   let app;
   let knex;
   let models;
@@ -23,19 +21,17 @@ describe('test users CRUD', () => {
     // тесты не должны зависеть друг от друга
     // перед каждым тестом выполняем миграции
     // и заполняем БД тестовыми данными
-    // await knex.migrate.latest();
-    // await prepareData(app);
+    await knex.migrate.latest();
+    await prepareData(app);
   });
 
   beforeEach(async () => {
-    await knex.migrate.latest();
-    await prepareData(app);
   });
 
   it('index', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('users'),
+      url: app.reverse('statuses'),
     });
 
     expect(response.statusCode).toBe(200);
@@ -44,80 +40,60 @@ describe('test users CRUD', () => {
   it('new', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('newUser'),
+      url: app.reverse('newStatus'),
     });
 
     expect(response.statusCode).toBe(200);
   });
 
   it('create', async () => {
-    const params = testData.users.new;
+    const params = testData.statuses.new;
     const response = await app.inject({
       method: 'POST',
-      url: app.reverse('users'),
+      url: app.reverse('statuses'),
       payload: {
         data: params,
       },
     });
 
     expect(response.statusCode).toBe(200);
-    const expected = {
-      ..._.omit(params, 'password'),
-      passwordDigest: encrypt(params.password),
-    };
-    const user = await models.user.query().findOne({ email: params.email });
-    expect(user).toMatchObject(expected);
+    const expected = params;
+    const status = await models.taskStatus.query().findOne({ name: params.name });
+    expect(status).toMatchObject(expected);
   });
 
   it('read', async () => {
-    const params = testData.users.existing;
+    const params = testData.statuses.existing;
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('users'),
+      url: app.reverse('statuses'),
       payload: {
         data: params,
       },
     });
 
     expect(response.statusCode).toBe(200);
-    const expected = {
-      ..._.omit(params, 'password'),
-      passwordDigest: encrypt(params.password),
-    };
-    const user = await models.user.query().findOne({ email: params.email });
-    expect(user).toMatchObject(expected);
+    const expected = params;
+    const status = await models.taskStatus.query().findOne({ name: params.name });
+    expect(status).toMatchObject(expected);
   });
 
   // it('update', async () => {
-  //   const paramsExisting = testData.users.new;
-  //   const responseExisting = await app.inject({
-  //     method: 'GET',
-  //     url: '/users/:id/edit',
-  //     payload: {
-  //       data: paramsExisting,
-  //     },
-  //   });
-
-  //   expect(responseExisting.statusCode).toBe(302);
-
-  //   const params = testData.users.updated;
+  //   const params = testData.statuses.updated;
   //   const response = await app.inject({
   //     method: 'PATCH',
-  //     url: '/users/:id',
+  //     url: '/statuses/:id',
   //     payload: {
   //       data: params,
   //     },
   //   });
 
   //   expect(response.statusCode).toBe(200);
-  //   const expected = {
-  //     ..._.omit(params, 'password'),
-  //     passwordDigest: encrypt(params.password),
-  //   };
-  //   // const user = await models.user.query().findOne({ email: params.email });
-  //   const user = await models.user.query().findOne({ email: paramsExisting.email });
-  //   console.log(user);
-  //   expect(user).toMatchObject(expected);
+  //   const expected = params;
+  //   const status = await models.taskStatus.query().findOne({ id: 2 });
+  //   // const status = await models.taskStatus.query().findOne({ name: params.name });
+  //   console.log(status);
+  //   expect(status).toMatchObject(expected);
   // });
 
   // it('delete', async () => {
@@ -156,7 +132,6 @@ describe('test users CRUD', () => {
     // Пока Segmentation fault: 11
     // после каждого теста откатываем миграции
     // await knex.migrate.rollback();
-    await knex('users').truncate();
   });
 
   afterAll(async () => {

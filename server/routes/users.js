@@ -70,7 +70,12 @@ export default (app) => {
       }
       const currentUserId = req.user.id;
       const { id } = req.params;
-      if (currentUserId !== Number(id)) {
+      const author = await app.objection.models.task.query().where('creator_id', '=', id);
+      const executor = await app.objection.models.task.query().where('executor_id', '=', id);
+      if (author.length || executor.length) {
+        req.flash('error', i18next.t('flash.users.removeUnSuccess'));
+        reply.redirect(app.reverse('users'));
+      } else if (currentUserId !== Number(id)) {
         req.flash('error', i18next.t('flash.users.edit'));
         reply.redirect(app.reverse('users'));
       } else {

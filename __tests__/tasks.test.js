@@ -1,13 +1,11 @@
 // @ts-check
 
-import _ from 'lodash';
 import fastify from 'fastify';
 
 import init from '../server/plugin.js';
-import encrypt from '../server/lib/secure.cjs';
 import { getTestData, prepareData } from './helpers/index.js';
 
-describe('test users CRUD', () => {
+describe('test tasks CRUD', () => {
   let app;
   let knex;
   let models;
@@ -28,7 +26,7 @@ describe('test users CRUD', () => {
   it('index', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('users'),
+      url: app.reverse('tasks'),
     });
 
     expect(response.statusCode).toBe(200);
@@ -37,72 +35,63 @@ describe('test users CRUD', () => {
   it('new', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('newUser'),
+      url: app.reverse('newTask'),
     });
 
     expect(response.statusCode).toBe(200);
   });
 
   it('create', async () => {
-    const params = testData.users.new;
+    const params = testData.tasks.new;
     const response = await app.inject({
       method: 'POST',
-      url: app.reverse('users'),
+      url: app.reverse('tasks'),
       payload: {
         data: params,
       },
     });
 
     expect(response.statusCode).toBe(200);
-    const expected = {
-      ..._.omit(params, 'password'),
-      passwordDigest: encrypt(params.password),
-    };
-    const user = await models.user.query().findOne({ email: params.email });
-    expect(user).toMatchObject(expected);
+    const expected = params;
+    const task = await models.task.query().findOne({ name: params.name });
+    expect(task).toMatchObject(expected);
   });
 
   it('read', async () => {
-    const params = testData.users.existing;
+    const params = testData.tasks.existing;
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('users'),
+      url: app.reverse('tasks'),
       payload: {
         data: params,
       },
     });
 
     expect(response.statusCode).toBe(200);
-    const expected = {
-      ..._.omit(params, 'password'),
-      passwordDigest: encrypt(params.password),
-    };
-    const user = await models.user.query().findOne({ email: params.email });
-    expect(user).toMatchObject(expected);
+    const expected = params;
+    const task = await models.task.query().findOne({ name: params.name });
+    expect(task).toMatchObject(expected);
   });
 
   // it('update', async () => {
-  //   const params = testData.users.updated;
+  //   const params = testData.tasks.updated;
   //   const response = await app.inject({
   //     method: 'PATCH',
-  //     url: '/users/2',
+  //     url: '/tasks/2',
   //     payload: {
   //       data: params,
   //     },
   //   });
 
-  //   // expect(response.statusCode).toBe(200);
-  //   const expected = {
-  //     ..._.omit(params, 'password'),
-  //     passwordDigest: encrypt(params.password),
-  //   };
-  //   const user = await models.user.query().findOne({ id: 2 });
-  //   console.log(user);
-  //   expect(user).toMatchObject(expected);
+  //   expect(response.statusCode).toBe(200);
+  //   const expected = params;
+  //   const status = await models.taskStatus.query().findOne({ id: 2 });
+  //   console.log(status);
+  //   expect(status).toMatchObject(expected);
   // });
 
   // it('delete', async () => {
-  //   const paramsExisting = testData.users.new;
+  //   const paramsExisting = testData.tasks.new;
   //   const responseExisting = await app.inject({
   //     method: 'GET',
   //     url: '/users/:id/edit',
@@ -113,7 +102,7 @@ describe('test users CRUD', () => {
 
   //   expect(responseExisting.statusCode).toBe(302);
 
-  //   const params = testData.users.new;
+  //   const params = testData.tasks.new;
   //   const response = await app.inject({
   //     method: 'DELETE',
   //     url: '/users/:id',
@@ -134,7 +123,7 @@ describe('test users CRUD', () => {
   // });
 
   afterEach(async () => {
-    await knex('users').truncate();
+    await knex('tasks').truncate();
   });
 
   afterAll(async () => {

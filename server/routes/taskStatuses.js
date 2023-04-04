@@ -53,9 +53,15 @@ export default (app) => {
     })
     .delete('/statuses/:id', async (req, reply) => {
       const { id } = req.params;
-      await app.objection.models.taskStatus.query().deleteById(id);
-      req.flash('info', i18next.t('flash.statuses.remove'));
-      reply.redirect(app.reverse('statuses'));
+      const task = await app.objection.models.task.query().where('status_id', '=', id);
+      if (task.length) {
+        req.flash('error', i18next.t('flash.statuses.removeFailure'));
+        reply.redirect(app.reverse('statuses'));
+      } else {
+        await app.objection.models.taskStatus.query().deleteById(id);
+        req.flash('info', i18next.t('flash.statuses.remove'));
+        reply.redirect(app.reverse('statuses'));
+      }
       return reply;
     });
 };

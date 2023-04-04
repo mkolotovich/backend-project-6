@@ -1,0 +1,13 @@
+extends ../layouts/application.pug
+
+block header
+  h1= t('views.tasks.editHeader')
+
+block content
+  +formFor()(action='/tasks/' + task.id method='post')
+    +input(task, 'name', errors, 'Наименование')(type="text")
+    +textarea(signInForm, 'description', errors, 'Описание')
+    +select(task, taskStatuses, 'statusId', errors, 'Статус')
+    +select(task, users, 'executorId', errors, 'Исполнитель')
+    input(type="hidden" name="_method" value="PATCH")
+    +submit(user)(value=t('views.tasks.edit'))

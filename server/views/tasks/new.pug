@@ -1,0 +1,12 @@
+extends ../layouts/application.pug
+
+block header
+  h1= t('views.tasks.new.header')
+
+block content
+  +formFor()(action='/tasks' method='post')
+    +input(task, 'name', errors, 'Наименование')(type="text")
+    +textarea(signInForm, 'description', errors, 'Описание')
+    +select(signInForm, taskStatuses, 'statusId', errors, 'Статус')
+    +select(signInForm, users, 'executorId', errors, 'Исполнитель')
+    +submit(user)(value=t('views.statuses.new.submit'))

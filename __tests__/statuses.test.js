@@ -16,16 +16,11 @@ describe('test statuses CRUD', () => {
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
-
-    // TODO: пока один раз перед тестами
-    // тесты не должны зависеть друг от друга
-    // перед каждым тестом выполняем миграции
-    // и заполняем БД тестовыми данными
-    await knex.migrate.latest();
-    await prepareData(app);
   });
 
   beforeEach(async () => {
+    await knex.migrate.latest();
+    await prepareData(app);
   });
 
   it('index', async () => {
@@ -78,23 +73,22 @@ describe('test statuses CRUD', () => {
     expect(status).toMatchObject(expected);
   });
 
-  // it('update', async () => {
-  //   const params = testData.statuses.updated;
-  //   const response = await app.inject({
-  //     method: 'PATCH',
-  //     url: '/statuses/:id',
-  //     payload: {
-  //       data: params,
-  //     },
-  //   });
+  it('update', async () => {
+    const params = testData.statuses.updated;
+    const response = await app.inject({
+      method: 'PATCH',
+      url: '/statuses/2',
+      payload: {
+        data: params,
+      },
+    });
 
-  //   expect(response.statusCode).toBe(200);
-  //   const expected = params;
-  //   const status = await models.taskStatus.query().findOne({ id: 2 });
-  //   // const status = await models.taskStatus.query().findOne({ name: params.name });
-  //   console.log(status);
-  //   expect(status).toMatchObject(expected);
-  // });
+    expect(response.statusCode).toBe(302);
+    const expected = params;
+    const status = await models.taskStatus.query().findOne({ id: 2 });
+    console.log(status);
+    expect(status).toMatchObject(expected);
+  });
 
   // it('delete', async () => {
   //   const paramsExisting = testData.users.new;
@@ -129,9 +123,7 @@ describe('test statuses CRUD', () => {
   // });
 
   afterEach(async () => {
-    // Пока Segmentation fault: 11
-    // после каждого теста откатываем миграции
-    // await knex.migrate.rollback();
+    await knex('task_statuses').truncate();
   });
 
   afterAll(async () => {

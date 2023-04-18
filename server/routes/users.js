@@ -42,7 +42,7 @@ export default (app) => {
         reply.render('users/edit', { user });
       }
     })
-    .patch('/users/:id', async (req, reply) => {
+    .patch('/users/:id', { name: 'patchUser' }, async (req, reply) => {
       const user = new app.objection.models.user();
       const userId = req.user.id;
       user.$set(req.body.data);

@@ -35,6 +35,17 @@ export default {
         remove: 'Статус успешно удалён',
         removeFailure: 'Не удалось удалить статус',
       },
+      labels: {
+        create: {
+          error: 'Не удалось создать статус',
+          success: 'Метка успешно создана',
+        },
+        edit: 'Вы не можете редактировать или удалять другого пользователя',
+        editBlanckPass: 'Не удалось изменить метку',
+        editSuccess: 'Метка успешно изменена',
+        remove: 'Метка успешно удалена',
+        removeFailure: 'Не удалось удалить метку',
+      },
       tasks: {
         create: {
           error: 'Не удалось создать задачу',
@@ -58,6 +69,8 @@ export default {
         editStatus: 'Изменение статуса',
         statuses: 'Статусы',
         tasks: 'Задачи',
+        labels: 'Метки',
+        editLabel: 'Изменение метки',
       },
     },
     views: {
@@ -88,6 +101,19 @@ export default {
         new: {
           submit: 'Создать',
           header: 'Создание статуса',
+        },
+        actions: 'Действия',
+        edit: 'Изменить',
+        remove: 'Удалить',
+      },
+      labels: {
+        id: 'ID',
+        name: 'Наименование',
+        createdAt: 'Дата создания',
+        create: 'Создать метку',
+        new: {
+          submit: 'Создать',
+          header: 'Создание метки',
         },
         actions: 'Действия',
         edit: 'Изменить',

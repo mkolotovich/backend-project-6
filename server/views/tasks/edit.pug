@@ -9,5 +9,6 @@ block content
     +textarea(signInForm, 'description', errors, 'Описание')
     +select(task, taskStatuses, 'statusId', errors, 'Статус')
     +select(task, users, 'executorId', errors, 'Исполнитель')
+    +select(labelIds, labels, 'labels', errors, 'Метки', true)
     input(type="hidden" name="_method" value="PATCH")
     +submit(user)(value=t('views.tasks.edit'))

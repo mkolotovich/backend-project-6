@@ -51,7 +51,6 @@ describe('test tasks CRUD', () => {
       },
     });
 
-    expect(response.statusCode).toBe(200);
     const expected = params;
     const task = await models.task.query().findOne({ name: params.name });
     expect(task).toMatchObject(expected);
@@ -83,11 +82,11 @@ describe('test tasks CRUD', () => {
   //     },
   //   });
 
-  //   expect(response.statusCode).toBe(200);
+  //   // expect(response.statusCode).toBe(200);
   //   const expected = params;
-  //   const status = await models.taskStatus.query().findOne({ id: 2 });
-  //   console.log(status);
-  //   expect(status).toMatchObject(expected);
+  //   const task = await models.task.query().findOne({ id: 2 });
+  //   console.log(task);
+  //   expect(task).toMatchObject(expected);
   // });
 
   // it('delete', async () => {

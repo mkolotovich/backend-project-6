@@ -1,5 +1,4 @@
 // @ts-check
-
 import fastify from 'fastify';
 import init from '../server/plugin.js';
 import { getTestData, prepareData } from './helpers/index.js';
@@ -14,8 +13,8 @@ describe('test session', () => {
     await init(app);
     knex = app.objection.knex;
     await knex.migrate.latest();
-    await prepareData(app);
     testData = getTestData();
+    await prepareData(app); // preparation should be the last thing before running the tests
   });
 
   it('test sign in / sign out', async () => {
@@ -53,7 +52,7 @@ describe('test session', () => {
   });
 
   afterAll(async () => {
-    // await knex.migrate.rollback();
+    // await knex.migrate.rollback(); // restore the database to the state before migrations
     await app.close();
   });
 });

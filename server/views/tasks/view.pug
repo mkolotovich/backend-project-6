@@ -9,7 +9,9 @@ block content
       .lead.fw-normal= task.description
     .col-md-4.border-start
       .mb-2 
-        span.badge.bg-danger= task.status
+        span.badge.me-1.bg-danger= task.status
+        each label in taskLabels
+          span.badge.bg-info.me-1= label.name
       .d-flex.mb-3
         span.text-muted.me-2= t('views.tasks.author')
         span= task.author

@@ -47,6 +47,22 @@
     },
     "updated": {
       "id": 2,
+      "name": "done",
+      "statusId": 2,
+      "creatorId": 2
+    }
+  },
+  "labels": {
+    "new": {
+      "id": 1,
+      "name": "bug"
+    },
+    "existing": {
+      "id": 2,
+      "name": "feature"
+    },
+    "updated": {
+      "id": 2,
       "name": "done"
     }
   }

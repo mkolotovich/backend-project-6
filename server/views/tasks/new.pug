@@ -9,4 +9,5 @@ block content
     +textarea(signInForm, 'description', errors, 'Описание')
     +select(signInForm, taskStatuses, 'statusId', errors, 'Статус')
     +select(signInForm, users, 'executorId', errors, 'Исполнитель')
+    +select(signInForm, labels, 'labels', errors, 'Метки', true)
     +submit(user)(value=t('views.statuses.new.submit'))

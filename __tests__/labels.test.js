@@ -5,7 +5,7 @@ import fastify from 'fastify';
 import init from '../server/plugin.js';
 import { getTestData, prepareData } from './helpers/index.js';
 
-describe('test statuses CRUD', () => {
+describe('test labels CRUD', () => {
   let app;
   let knex;
   let models;
@@ -26,7 +26,7 @@ describe('test statuses CRUD', () => {
   it('index', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('statuses'),
+      url: app.reverse('labels'),
     });
 
     expect(response.statusCode).toBe(200);
@@ -35,17 +35,17 @@ describe('test statuses CRUD', () => {
   it('new', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('newStatus'),
+      url: app.reverse('newLabel'),
     });
 
     expect(response.statusCode).toBe(200);
   });
 
   it('create', async () => {
-    const params = testData.statuses.new;
+    const params = testData.labels.new;
     const response = await app.inject({
       method: 'POST',
-      url: app.reverse('statuses'),
+      url: app.reverse('labels'),
       payload: {
         data: params,
       },
@@ -53,15 +53,15 @@ describe('test statuses CRUD', () => {
 
     expect(response.statusCode).toBe(200);
     const expected = params;
-    const status = await models.taskStatus.query().findOne({ name: params.name });
-    expect(status).toMatchObject(expected);
+    const label = await models.label.query().findOne({ name: params.name });
+    expect(label).toMatchObject(expected);
   });
 
   it('read', async () => {
-    const params = testData.statuses.existing;
+    const params = testData.labels.existing;
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('statuses'),
+      url: app.reverse('labels'),
       payload: {
         data: params,
       },
@@ -69,15 +69,15 @@ describe('test statuses CRUD', () => {
 
     expect(response.statusCode).toBe(200);
     const expected = params;
-    const status = await models.taskStatus.query().findOne({ name: params.name });
-    expect(status).toMatchObject(expected);
+    const label = await models.label.query().findOne({ name: params.name });
+    expect(label).toMatchObject(expected);
   });
 
   it('update', async () => {
-    const params = testData.statuses.updated;
+    const params = testData.labels.updated;
     const response = await app.inject({
       method: 'PATCH',
-      url: '/statuses/2',
+      url: '/labels/2',
       payload: {
         data: params,
       },
@@ -85,16 +85,15 @@ describe('test statuses CRUD', () => {
 
     expect(response.statusCode).toBe(302);
     const expected = params;
-    const status = await models.taskStatus.query().findOne({ id: 2 });
-    console.log(status);
-    expect(status).toMatchObject(expected);
+    const label = await models.label.query().findOne({ id: 2 });
+    expect(label).toMatchObject(expected);
   });
 
   it('delete', async () => {
-    const paramsExisting = testData.statuses.new;
+    const paramsExisting = testData.labels.new;
     const responseExisting = await app.inject({
       method: 'GET',
-      url: '/statuses/3/edit',
+      url: '/labels/1/edit',
       payload: {
         data: paramsExisting,
       },
@@ -102,10 +101,10 @@ describe('test statuses CRUD', () => {
 
     expect(responseExisting.statusCode).toBe(200);
 
-    const params = testData.statuses.new;
+    const params = testData.labels.new;
     const response = await app.inject({
       method: 'DELETE',
-      url: '/statuses/3',
+      url: '/labels/1',
       payload: {
         data: params,
       },
@@ -113,13 +112,13 @@ describe('test statuses CRUD', () => {
 
     expect(response.statusCode).toBe(302);
     const expected = undefined;
-    const status = await models.taskStatus.query().findOne({ id: 3 });
-    console.log(status);
-    expect(status).toBe(expected);
+    const label = await models.label.query().findOne({ id: 1 });
+    console.log(label);
+    expect(label).toBe(expected);
   });
 
   afterEach(async () => {
-    await knex('task_statuses').truncate();
+    await knex('labels').truncate();
   });
 
   afterAll(async () => {

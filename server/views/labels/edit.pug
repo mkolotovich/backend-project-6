@@ -1,0 +1,10 @@
+extends ../layouts/application.pug
+
+block header
+  h1= t('layouts.application.editLabel')
+
+block content
+  +formFor()(action='/labels/' + label.id method='post')
+    +input(label, 'name', errors, 'Наименование')(type="text")
+    input(type="hidden" name="_method" value="PATCH")
+    +submit(user)(value=t('views.statuses.edit'))

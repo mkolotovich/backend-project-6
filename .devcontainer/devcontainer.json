@@ -2,8 +2,8 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node
 {
 	"name": "Node.js",
-	"image": "mcr.microsoft.com/devcontainers/javascript-node:16-bullseye",
-	"appPort": ["8080:8080"]
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:16-bullseye"
+	// "appPort": ["8080:8080"]
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 

@@ -30,24 +30,47 @@ export default (app) => {
       const task = new app.objection.models.task();
       const taskStatuses = await app.objection.models.taskStatus.query();
       const users = await app.objection.models.user.query();
-      reply.render('tasks/new', { task, taskStatuses, users });
+      const labels = await app.objection.models.label.query();
+      reply.render('tasks/new', {
+        task, taskStatuses, users, labels,
+      });
       return reply;
     })
     .post('/tasks', async (req, reply) => {
       const task = new app.objection.models.task();
+      const { labels } = req.body.data;
       task.$set(req.body.data);
       try {
         const newTask = { ...req.body.data, creatorId: Number(req.user.id) };
         newTask.statusId = Number(newTask.statusId);
         newTask.executorId = Number(newTask.executorId);
         const user = await app.objection.models.user.query().findById(newTask.creatorId);
-        await user.$relatedQuery('owner').insert({
-          name: newTask.name,
-          description: newTask.description,
-          statusId: newTask.statusId,
-          creatorId: newTask.creatorId,
-          executorId: newTask.executorId,
-        }).debug();
+        await app.objection.models.label.transaction(async (trx) => {
+          const taskUser = await user.$relatedQuery('owner', trx).insert({
+            name: newTask.name,
+            description: newTask.description,
+            statusId: newTask.statusId,
+            creatorId: newTask.creatorId,
+            executorId: newTask.executorId,
+          }).debug();
+          if (Array.isArray(labels)) {
+            const taskLabels = labels.map(async (label) => {
+              const taskLabel = await app.objection.models.taskLabel.query(trx).insert({
+                task_id: taskUser.id,
+                label_id: Number(label),
+              }).debug();
+              return taskLabel;
+            });
+            return Promise.all(taskLabels);
+          } if (typeof labels === 'string') {
+            const taskLabel = await app.objection.models.taskLabel.query(trx).insert({
+              task_id: taskUser.id,
+              label_id: Number(labels),
+            }).debug();
+            return taskLabel;
+          }
+          return taskUser;
+        });
         req.flash('info', i18next.t('flash.tasks.create.success'));
         reply.redirect(app.reverse('tasks'));
       } catch ({ data }) {
@@ -67,6 +90,16 @@ export default (app) => {
       const statusName = await app.objection.models.taskStatus.query()
         .select('name')
         .where('id', '=', task.statusId);
+      const labels = await app.objection.models.taskLabel.query()
+        .select('label_id')
+        .where('task_id', '=', task.id);
+      const labelIds = labels.map(async (el) => {
+        const label = await app.objection.models.label.query()
+          .select('name')
+          .where('id', '=', el.labelId).first();
+        return label;
+      });
+      const labelsNames = await Promise.all(labelIds);
       const author = await app.objection.models.user.query()
         .select('firstName', 'lastName')
         .where('id', '=', task.creatorId);
@@ -76,14 +109,21 @@ export default (app) => {
       task.status = statusName[0].name;
       task.author = `${author[0].firstName} ${author[0].lastName}`;
       task.executor = executor.length ? `${executor[0].firstName} ${executor[0].lastName}` : '';
-      reply.render('tasks/view', { task });
+      const taskLabels = labels.length ? labelsNames : '';
+      reply.render('tasks/view', { task, taskLabels });
     })
     .get('/tasks/:id/edit', async (req, reply) => {
       const { id } = req.params;
       const task = await app.objection.models.task.query().findById(id);
       const taskStatuses = await app.objection.models.taskStatus.query();
       const users = await app.objection.models.user.query();
-      reply.render('tasks/edit', { task, taskStatuses, users });
+      const labels = await app.objection.models.label.query();
+      const taskLabels = await app.objection.models.taskLabel.query().select('label_id')
+        .where('task_id', '=', task.id);
+      const labelIds = taskLabels.map((el) => el.labelId);
+      reply.render('tasks/edit', {
+        task, taskStatuses, users, labels, labelIds,
+      });
     })
     .patch('/tasks/:id', async (req, reply) => {
       const task = new app.objection.models.task();
@@ -100,6 +140,48 @@ export default (app) => {
           statusId: task.statusId,
           executorId: task.executorId,
         });
+        const taskLabels = await app.objection.models.taskLabel.query().select('*')
+          .where('task_id', '=', task.id);
+        const labelIds = req.body.data.labels;
+        if (typeof labelIds === 'string') {
+          if (taskLabels.length) {
+            const labels = taskLabels.map(async (taskLabel) => {
+              const label = await taskLabel.$query().deleteById(taskLabel.id).debug();
+              return label;
+            });
+            await Promise.all(labels);
+            await app.objection.models.taskLabel.query().insert({
+              task_id: Number(id),
+              label_id: Number(labelIds),
+            }).debug();
+          } else {
+            await app.objection.models.taskLabel.query().insert({
+              task_id: Number(id),
+              label_id: Number(labelIds),
+            }).debug();
+          }
+        } else if (Array.isArray(labelIds)) {
+          if (taskLabels.length) {
+            const labels = taskLabels.map(async (taskLabel) => {
+              const label = await taskLabel.$query().deleteById(taskLabel.id).debug();
+              return label;
+            });
+            await Promise.all(labels);
+            labelIds.map(async (label) => {
+              await app.objection.models.taskLabel.query().insert({
+                task_id: Number(id),
+                label_id: Number(label),
+              }).debug();
+            });
+          } else {
+            labelIds.map(async (label) => {
+              await app.objection.models.taskLabel.query().insert({
+                task_id: Number(id),
+                label_id: Number(label),
+              }).debug();
+            });
+          }
+        }
         req.flash('info', i18next.t('flash.tasks.editSuccess'));
         reply.redirect(app.reverse('tasks'));
       } catch ({ data }) {

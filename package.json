@@ -13,7 +13,7 @@
       "testInMemory": "NODE_ENV=test & jest --verbose --runInBand",
       "build": "webpack",
       "start": "fastify start server/plugin.js -l debug -P",
-      "dev": "nodemon"
+      "dev": "npx nodemon --legacy-watch"
    },
    "jest": {
       "modulePathIgnorePatterns": [
@@ -36,6 +36,7 @@
    "dependencies": {
       "@vscode/sqlite3": "^5.0.8",
       "bootstrap": "^5.1.3",
+      "dotenv": "^16.0.3",
       "fastify": "^3.29.0",
       "fastify-cli": "^3.1.0",
       "fastify-error-page": "^4.0.0",
@@ -59,6 +60,7 @@
       "point-of-view": "^5.3.0",
       "pug": "^3.0.2",
       "qs": "^6.10.3",
+      "rollbar": "^2.26.1",
       "sqlite3": "^5.0.8",
       "webpack": "^5.72.1"
    },
@@ -67,7 +69,6 @@
       "@types/jest": "^27.5.1",
       "@types/node": "^17.0.35",
       "css-loader": "^6.7.1",
-      "dotenv": "^16.0.1",
       "eslint": "^8.15.0",
       "eslint-config-airbnb-base": "^15.0.0",
       "eslint-plugin-import": "^2.26.0",

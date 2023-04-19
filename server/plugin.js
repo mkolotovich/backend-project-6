@@ -1,10 +1,10 @@
 // @ts-check
-
+import * as dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fastifyStatic from 'fastify-static';
 import fastifyErrorPage from 'fastify-error-page';
-
+import Rollbar from 'rollbar';
 import pointOfView from 'point-of-view';
 import fastifyFormbody from 'fastify-formbody';
 import fastifySecureSession from 'fastify-secure-session';
@@ -26,11 +26,20 @@ import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 
+dotenv.config();
+
 const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
 const mode = process.env.NODE_ENV || 'development';
 // const isDevelopment = mode === 'development';
 console.log(mode);
+
+const rollbarInstance = new Rollbar({
+  accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+});
+
 const setUpViews = (app) => {
   const helpers = getHelpers(app);
   app.register(pointOfView, {
@@ -125,5 +134,10 @@ export default async (app, options) => {
   addRoutes(app);
   addHooks(app);
 
+  app.setErrorHandler((err, req, res) => {
+    rollbarInstance.error(err, req, res);
+    res.send(err);
+  });
+  rollbarInstance.log('Hello world!');
   return app;
 };

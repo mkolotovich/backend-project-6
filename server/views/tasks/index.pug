@@ -2,9 +2,26 @@ extends ../layouts/application.pug
 
 block header
   h1= t('layouts.application.tasks')
-  a(href='/tasks/new' class="btn btn-primary me-1")= t('views.tasks.create')
+  a(href='/tasks/new' class="btn btn-primary me-1 mb-5")= t('views.tasks.create')
 block content
-  table.table.table-striped
+  .card.shadow-sm
+    .card-body.p-4
+      +formFor()(action='/tasks' method='get')
+        .row 
+          .col-12.col-md
+            +select(status, taskStatuses, 'status', errors, 'Статус', 'filter')
+          .col-12.col-md
+            +select(executor, users, 'executor', errors, 'Исполнитель', 'filter')
+          .col-12.col-md
+            +select(label, labels, 'label', errors, 'Метка', 'filter')
+        .form-check.mb-3
+          if (isCreatorUser)
+            input(type="checkbox" name="isCreatorUser" id="data_isCreatorUser" class="form-check-input" checked)
+          else
+            input(type="checkbox" name="isCreatorUser" id="data_isCreatorUser" class="form-check-input")
+          label(for="data_isCreatorUser")=t('layouts.application.onlyMyTasks')
+        +submit(user)(value=t('layouts.application.show'))
+  table.table.table-striped.mt-5
     thead
       tr
         th= t('views.statuses.id')
@@ -19,9 +36,9 @@ block content
           td= task.id
           td  
             a(href='/tasks/' + task.id)= task.name
-          td= task.status
-          td= task.author
-          td= task.executor
+          td= task.status.name
+          td= task.author.firstName + ' ' + task.author.lastName
+          td= task.executor === null ? '' : task.executor.firstName + ' ' + task.executor.lastName
           td= formatDate(task.createdAt)
           td(class="d-flex") 
             a(href='/tasks/' + task.id + '/edit' class="btn btn-primary me-1")= t('views.users.edit')

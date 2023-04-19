@@ -37,7 +37,8 @@
       "id": 1,
       "name": "new",
       "statusId": 1,
-      "creatorId": 1
+      "creatorId": 1,
+      "executorId": 1
     },
     "existing": {
       "id": 2,
@@ -64,6 +65,13 @@
     "updated": {
       "id": 2,
       "name": "done"
+    }
+  },
+  "taskLabels": {
+    "new": {
+      "id": 1,
+      "labelId": 1,
+      "taskId": 1
     }
   }
 }

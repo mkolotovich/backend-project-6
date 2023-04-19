@@ -71,6 +71,8 @@ export default {
         tasks: 'Задачи',
         labels: 'Метки',
         editLabel: 'Изменение метки',
+        show: 'Показать',
+        onlyMyTasks: 'Только мои задачи',
       },
     },
     views: {

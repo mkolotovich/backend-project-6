@@ -5,25 +5,114 @@ import i18next from 'i18next';
 export default (app) => {
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
+      const {
+        status, executor, label, isCreatorUser,
+      } = req.query;
       const tasks = await app.objection.models.task.query();
-      const tasksFormatted = tasks.map(async (el) => {
-        const taskFormatted = el;
-        const statusName = await app.objection.models.taskStatus.query()
-          .select('name')
-          .where('id', '=', taskFormatted.statusId);
-        const author = await app.objection.models.user.query()
-          .select('firstName', 'lastName')
-          .where('id', '=', taskFormatted.creatorId);
-        const executor = await app.objection.models.user.query()
-          .select('firstName', 'lastName')
-          .where('id', '=', taskFormatted.executorId);
-        taskFormatted.status = statusName[0].name;
-        taskFormatted.author = `${author[0].firstName} ${author[0].lastName}`;
-        taskFormatted.executor = executor.length ? `${executor[0].firstName} ${executor[0].lastName}` : '';
-        return taskFormatted;
+      let filteredTasks = tasks;
+      if (status) {
+        if (executor && label && isCreatorUser) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('status_id', '=', status)
+            .where('label.id', '=', label)
+            .where('executor_id', '=', executor)
+            .where('creator_id', '=', req.user.id);
+        } else if (executor && label) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('status_id', '=', status)
+            .where('label.id', '=', label)
+            .where('executor_id', '=', executor);
+        } else if (executor && isCreatorUser) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('status_id', '=', status)
+            .where('executor_id', '=', executor)
+            .where('creator_id', '=', req.user.id);
+        } else if (label && isCreatorUser) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('status_id', '=', status)
+            .where('label.id', '=', label)
+            .where('creator_id', '=', req.user.id);
+        } else if (label) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('status_id', '=', status)
+            .where('label.id', '=', label);
+        } else if (executor) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('status_id', '=', status)
+            .where('executor_id', '=', executor);
+        } else if (isCreatorUser) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('status_id', '=', status)
+            .where('creator_id', '=', req.user.id);
+        } else {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('status_id', '=', status);
+        }
+      } else if (executor) {
+        if (label && isCreatorUser) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('executor_id', executor)
+            .where('creator_id', '=', req.user.id)
+            .where('label.id', '=', label);
+        } else if (label) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('executor_id', executor)
+            .where('label.id', '=', label);
+        } else if (isCreatorUser) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('executor_id', executor)
+            .where('creator_id', '=', req.user.id);
+        } else {
+          filteredTasks = await app.objection.models.task.query().withGraphJoined('[status, author, executor, label]').where('executor_id', executor);
+        }
+      } else if (label) {
+        if (isCreatorUser) {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('label.id', '=', label)
+            .where('creator_id', '=', req.user.id);
+        } else {
+          filteredTasks = await app.objection.models.task.query()
+            .withGraphJoined('[status, author, executor, label]')
+            .where('label.id', '=', label);
+        }
+      } else if (isCreatorUser) {
+        filteredTasks = await app.objection.models.task.query()
+          .withGraphJoined('[status, author, executor, label]')
+          .where('creator_id', '=', req.user.id);
+      } else {
+        const tasksFormatted = filteredTasks.map(async (el) => {
+          const taskFormatted = el;
+          const statusName = await app.objection.models.taskStatus.query()
+            .where('id', '=', taskFormatted.statusId);
+          const author = await app.objection.models.user.query()
+            .where('id', '=', taskFormatted.creatorId);
+          const executorFullName = await app.objection.models.user.query()
+            .where('id', '=', taskFormatted.executorId);
+          [taskFormatted.status] = statusName;
+          [taskFormatted.author] = author;
+          taskFormatted.executor = executorFullName.length ? executorFullName[0] : null;
+          return taskFormatted;
+        });
+        await Promise.all(tasksFormatted);
+      }
+      const taskStatuses = await app.objection.models.taskStatus.query();
+      const users = await app.objection.models.user.query();
+      const labels = await app.objection.models.label.query();
+      reply.render('tasks/index', {
+        tasks: filteredTasks, taskStatuses, users, labels, status, executor, label, isCreatorUser,
       });
-      await Promise.all(tasksFormatted);
-      reply.render('tasks/index', { tasks });
       return reply;
     })
     .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {

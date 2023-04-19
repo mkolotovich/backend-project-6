@@ -43,7 +43,7 @@ describe('test tasks CRUD', () => {
 
   it('create', async () => {
     const params = testData.tasks.new;
-    const response = await app.inject({
+    await app.inject({
       method: 'POST',
       url: app.reverse('tasks'),
       payload: {

@@ -104,7 +104,7 @@ describe('test labels CRUD', () => {
     const params = testData.labels.new;
     const response = await app.inject({
       method: 'DELETE',
-      url: '/labels/1',
+      url: '/labels/2',
       payload: {
         data: params,
       },
@@ -112,7 +112,7 @@ describe('test labels CRUD', () => {
 
     expect(response.statusCode).toBe(302);
     const expected = undefined;
-    const label = await models.label.query().findOne({ id: 1 });
+    const label = await models.label.query().findOne({ id: 2 });
     console.log(label);
     expect(label).toBe(expected);
   });

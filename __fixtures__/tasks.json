@@ -2,7 +2,8 @@
   {
     "name": "new",
     "statusId": 1,
-    "creatorId": 1
+    "creatorId": 1,
+    "executorId": 1
   },
   {
     "name": "in work",

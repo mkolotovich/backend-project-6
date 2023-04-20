@@ -167,8 +167,9 @@ export default (app) => {
         req.flash('error', i18next.t('flash.tasks.create.error'));
         const taskStatuses = await app.objection.models.taskStatus.query();
         const users = await app.objection.models.user.query();
+        const taskLabels = await app.objection.models.label.query();
         reply.render('tasks/new', {
-          task, taskStatuses, users, errors: data,
+          task, taskStatuses, users, errors: data, labels: taskLabels,
         });
       }
       return reply;

@@ -200,6 +200,7 @@ export default (app) => {
       task.executor = executor.length ? `${executor[0].firstName} ${executor[0].lastName}` : '';
       const taskLabels = labels.length ? labelsNames : '';
       reply.render('tasks/view', { task, taskLabels });
+      return reply;
     })
     .get('/tasks/:id/edit', async (req, reply) => {
       const { id } = req.params;
@@ -213,6 +214,7 @@ export default (app) => {
       reply.render('tasks/edit', {
         task, taskStatuses, users, labels, labelIds,
       });
+      return reply;
     })
     .patch('/tasks/:id', async (req, reply) => {
       const task = new app.objection.models.task();

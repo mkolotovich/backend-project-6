@@ -31,6 +31,7 @@ export default (app) => {
       const { id } = req.params;
       const label = await app.objection.models.label.query().findById(id);
       reply.render('labels/edit', { label });
+      return reply;
     })
     .patch('/labels/:id', async (req, reply) => {
       const label = new app.objection.models.label();

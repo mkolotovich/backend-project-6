@@ -31,6 +31,7 @@ export default (app) => {
       const { id } = req.params;
       const status = await app.objection.models.taskStatus.query().findById(id);
       reply.render('statuses/edit', { status });
+      return reply;
     })
     .patch('/statuses/:id', async (req, reply) => {
       const status = new app.objection.models.taskStatus();

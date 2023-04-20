@@ -12,7 +12,7 @@
       "test": "jest --verbose --runInBand",
       "testInMemory": "NODE_ENV=test & jest --verbose --runInBand",
       "build": "webpack",
-      "start": "fastify start server/plugin.js -l debug -P",
+      "start": "fastify start server/plugin.js -l debug -P -o",
       "dev": "npx nodemon --legacy-watch"
    },
    "jest": {

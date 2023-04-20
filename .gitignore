@@ -9,4 +9,3 @@ database.sqlite
 .env
 .devcontainer/
 backend-project-6.code-workspace
-nodemon.json

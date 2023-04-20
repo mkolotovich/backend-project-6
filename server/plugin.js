@@ -2,24 +2,25 @@
 import * as dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import fastifyStatic from 'fastify-static';
-import fastifyErrorPage from 'fastify-error-page';
+import fastifyStatic from '@fastify/static';
+// NOTE: не поддердивает fastify 4.x
+// import fastifyErrorPage from 'fastify-error-page';
 import Rollbar from 'rollbar';
-import pointOfView from 'point-of-view';
-import fastifyFormbody from 'fastify-formbody';
-import fastifySecureSession from 'fastify-secure-session';
-import fastifyPassport from 'fastify-passport';
-import fastifySensible from 'fastify-sensible';
+import fastifyView from '@fastify/view';
+import fastifyFormbody from '@fastify/formbody';
+import fastifySecureSession from '@fastify/secure-session';
+import fastifyPassport from '@fastify/passport';
+import fastifySensible from '@fastify/sensible';
 import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
 import qs from 'qs';
 import Pug from 'pug';
 import i18next from 'i18next';
+
 import ru from './locales/ru.js';
 import en from './locales/en.js';
 // @ts-ignore
-
 import addRoutes from './routes/index.js';
 import getHelpers from './helpers/index.js';
 import * as knexConfig from '../knexfile.js';
@@ -32,8 +33,6 @@ const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
 const mode = process.env.NODE_ENV || 'development';
 // const isDevelopment = mode === 'development';
-console.log(mode);
-
 const rollbarInstance = new Rollbar({
   accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
   captureUncaught: true,
@@ -42,7 +41,7 @@ const rollbarInstance = new Rollbar({
 
 const setUpViews = (app) => {
   const helpers = getHelpers(app);
-  app.register(pointOfView, {
+  app.register(fastifyView, {
     engine: {
       pug: Pug,
     },
@@ -70,8 +69,8 @@ const setUpStaticAssets = (app) => {
 const setupLocalization = async () => {
   await i18next
     .init({
-      lng: 'ru',
-      fallbackLng: 'en',
+      lng: 'en',
+      fallbackLng: 'ru',
       // debug: isDevelopment,
       resources: {
         ru,
@@ -88,12 +87,12 @@ const addHooks = (app) => {
   });
 };
 
-const registerPlugins = (app) => {
-  app.register(fastifySensible);
-  app.register(fastifyErrorPage);
-  app.register(fastifyReverseRoutes);
-  app.register(fastifyFormbody, { parser: qs.parse });
-  app.register(fastifySecureSession, {
+const registerPlugins = async (app) => {
+  await app.register(fastifySensible);
+  // await app.register(fastifyErrorPage);
+  await app.register(fastifyReverseRoutes);
+  await app.register(fastifyFormbody, { parser: qs.parse });
+  await app.register(fastifySecureSession, {
     secret: process.env.SESSION_KEY,
     cookie: {
       path: '/',
@@ -105,9 +104,9 @@ const registerPlugins = (app) => {
   );
   fastifyPassport.registerUserSerializer((user) => Promise.resolve(user));
   fastifyPassport.use(new FormStrategy('form', app));
-  app.register(fastifyPassport.initialize());
-  app.register(fastifyPassport.secureSession());
-  app.decorate('fp', fastifyPassport);
+  await app.register(fastifyPassport.initialize());
+  await app.register(fastifyPassport.secureSession());
+  await app.decorate('fp', fastifyPassport);
   app.decorate('authenticate', (...args) => fastifyPassport.authenticate(
     'form',
     {
@@ -117,27 +116,29 @@ const registerPlugins = (app) => {
   // @ts-ignore
   )(...args));
 
-  app.register(fastifyMethodOverride);
-  app.register(fastifyObjectionjs, {
+  await app.register(fastifyMethodOverride);
+  await app.register(fastifyObjectionjs, {
     knexConfig: knexConfig[mode],
     models,
   });
 };
 
+export const options = {
+  exposeHeadRoutes: false,
+};
+
 // eslint-disable-next-line no-unused-vars
-export default async (app, options) => {
-  registerPlugins(app);
+export default async (app, _options) => {
+  await registerPlugins(app);
 
   await setupLocalization();
   setUpViews(app);
   setUpStaticAssets(app);
   addRoutes(app);
   addHooks(app);
-
   app.setErrorHandler((err, req, res) => {
     rollbarInstance.error(err, req, res);
     res.send(err);
   });
-  rollbarInstance.log('Hello world!');
   return app;
 };

@@ -6,7 +6,7 @@ block header
 block content
   +formFor()(action='/tasks/' + task.id method='post')
     +input(task, 'name', errors, 'Наименование')(type="text")
-    +textarea(signInForm, 'description', errors, 'Описание')
+    +textarea(task, 'description', errors, 'Описание')
     +select(task, taskStatuses, 'statusId', errors, 'Статус')
     +select(task, users, 'executorId', errors, 'Исполнитель')
     +select(labelIds, labels, 'labels', errors, 'Метки', true)

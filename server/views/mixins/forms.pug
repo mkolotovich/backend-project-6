@@ -34,7 +34,7 @@ mixin textarea(entity, propertyName, errors = {}, label)
       id= inputId
       name=getInputName(propertyName)
       class=classLine
-    )&attributes(attributes)
+    )&attributes(attributes)=entity.description
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 

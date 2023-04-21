@@ -12,7 +12,10 @@ describe('test labels CRUD', () => {
   const testData = getTestData();
 
   beforeAll(async () => {
-    app = fastify({ logger: { prettyPrint: true } });
+    app = fastify({
+      exposeHeadRoutes: false,
+      logger: { target: 'pino-pretty' },
+    });
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;

@@ -20,7 +20,7 @@ block content
           td= user.email
           td= formatDate(user.createdAt)
           td(class="d-flex") 
-            a(href='/users/' + user.id + '/edit' class="btn btn-primary me-1")= t('views.users.edit')
-            +formFor()(action='/users/' + user.id method='post')
+            a(href=route('users') + '/' + user.id + '/edit' class="btn btn-primary me-1")= t('views.users.edit')
+            +formFor()(action=route('users') + '/' + user.id method='post')
               input(type="hidden" name="_method" value="DELETE")
               input(class='btn btn-danger' type='submit' value=t('views.users.remove'))

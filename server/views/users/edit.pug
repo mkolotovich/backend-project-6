@@ -4,7 +4,7 @@ block header
   h1= t('layouts.application.edit')
 
 block content
-  +formFor()(action='/users/' + user.id method='post')
+  +formFor()(action=route('users') + '/' + user.id method='post')
     +input(user, 'firstName', errors, 'Имя')(type="text")
     +input(user, 'lastName', errors, 'Фамилия')(type="text")
     +input(user, 'email', errors, 'Email')(type="text")

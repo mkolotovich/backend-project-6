@@ -2,11 +2,11 @@ extends ../layouts/application.pug
 
 block header
   h1= t('layouts.application.tasks')
-  a(href='/tasks/new' class="btn btn-primary me-1 mb-5")= t('views.tasks.create')
+  a(href=route('newTask') class="btn btn-primary me-1 mb-5")= t('views.tasks.create')
 block content
   .card.shadow-sm
     .card-body.p-4
-      +formFor()(action='/tasks' method='get')
+      +formFor()(action=route('tasks') method='get')
         .row 
           .col-12.col-md
             +select(status, taskStatuses, 'status', errors, 'Статус', 'filter')
@@ -35,13 +35,13 @@ block content
         tr
           td= task.id
           td  
-            a(href='/tasks/' + task.id)= task.name
+            a(href=route('tasks') + '/' + task.id)= task.name
           td= task.status.name
           td= task.author.firstName + ' ' + task.author.lastName
           td= task.executor === null ? '' : task.executor.firstName + ' ' + task.executor.lastName
           td= formatDate(task.createdAt)
           td(class="d-flex") 
-            a(href='/tasks/' + task.id + '/edit' class="btn btn-primary me-1")= t('views.users.edit')
-            +formFor()(action='/tasks/' + task.id method='post')
+            a(href=route('tasks') + '/' + task.id + '/edit' class="btn btn-primary me-1")= t('views.users.edit')
+            +formFor()(action=route('tasks') + '/' + task.id method='post')
               input(type="hidden" name="_method" value="DELETE")
               input(class='btn btn-danger' type='submit' value=t('views.users.remove'))

@@ -2,7 +2,7 @@ extends ../layouts/application.pug
 
 block header
   h1= t('layouts.application.statuses')
-  a(href='/statuses/new' class="btn btn-primary me-1")= t('views.statuses.create')
+  a(href=route('newStatus') class="btn btn-primary me-1")= t('views.statuses.create')
 block content
   table.table.table-striped
     thead
@@ -17,7 +17,7 @@ block content
           td= status.name
           td= formatDate(status.createdAt)
           td(class="d-flex") 
-            a(href='/statuses/' + status.id + '/edit' class="btn btn-primary me-1")= t('views.users.edit')
-            +formFor()(action='/statuses/' + status.id method='post')
+            a(href=route('statuses') + '/' + status.id + '/edit' class="btn btn-primary me-1")= t('views.users.edit')
+            +formFor()(action=route('statuses') + '/' + status.id method='post')
               input(type="hidden" name="_method" value="DELETE")
               input(class='btn btn-danger' type='submit' value=t('views.users.remove'))

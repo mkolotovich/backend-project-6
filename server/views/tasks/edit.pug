@@ -5,10 +5,10 @@ block header
 
 block content
   +formFor()(action=route('tasks') + '/' + task.id method='post')
-    +input(task, 'name', errors, 'Наименование')(type="text")
-    +textarea(task, 'description', errors, 'Описание')
-    +select(task, taskStatuses, 'statusId', errors, 'Статус')
-    +select(task, users, 'executorId', errors, 'Исполнитель')
-    +select(labelIds, labels, 'labels', errors, 'Метки', true)
+    +input(task, 'name', errors, t('views.tasks.name'))(type="text")
+    +textarea(task, 'description', errors, t('views.tasks.description'))
+    +select(task, taskStatuses, 'statusId', errors, t('views.tasks.status'))
+    +select(task, users, 'executorId', errors, t('views.tasks.executor'))
+    +select(labelIds, labels, 'labels', errors, t('layouts.application.labels'), true)
     input(type="hidden" name="_method" value="PATCH")
     +submit(user)(value=t('views.tasks.edit'))

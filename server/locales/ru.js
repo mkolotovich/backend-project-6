@@ -73,6 +73,8 @@ export default {
         editLabel: 'Изменение метки',
         show: 'Показать',
         onlyMyTasks: 'Только мои задачи',
+        title: 'Hexlet Task Manager',
+        footer: 'Hexlet',
       },
     },
     views: {
@@ -94,6 +96,9 @@ export default {
         actions: 'Действия',
         edit: 'Изменить',
         remove: 'Удалить',
+        name: 'Имя',
+        lastName: 'Фамилия',
+        pass: 'Пароль',
       },
       statuses: {
         id: 'ID',
@@ -124,6 +129,7 @@ export default {
       tasks: {
         id: 'ID',
         name: 'Наименование',
+        description: 'Описание',
         status: 'Статус',
         author: 'Автор',
         executor: 'Исполнитель',
@@ -137,6 +143,7 @@ export default {
         actions: 'Действия',
         edit: 'Изменить',
         remove: 'Удалить',
+        label: 'Метка',
       },
       welcome: {
         index: {

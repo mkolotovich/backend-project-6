@@ -5,6 +5,6 @@ block header
 
 block content
   +formFor()(action=route('labels') + '/' + label.id method='post')
-    +input(label, 'name', errors, 'Наименование')(type="text")
+    +input(label, 'name', errors, t('views.statuses.name'))(type="text")
     input(type="hidden" name="_method" value="PATCH")
     +submit(user)(value=t('views.statuses.edit'))

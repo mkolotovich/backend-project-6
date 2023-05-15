@@ -5,9 +5,9 @@ block header
 
 block content
   +formFor()(action=route('users') + '/' + user.id method='post')
-    +input(user, 'firstName', errors, 'Имя')(type="text")
-    +input(user, 'lastName', errors, 'Фамилия')(type="text")
-    +input(user, 'email', errors, 'Email')(type="text")
-    +input(signInForm, 'password', errors, 'Пароль')(type="password")
+    +input(user, 'firstName', errors, t('views.users.name'))(type="text")
+    +input(user, 'lastName', errors, t('views.users.lastName'))(type="text")
+    +input(user, 'email', errors, t('views.users.email'))(type="text")
+    +input(signInForm, 'password', errors, t('views.users.pass'))(type="password")
     input(type="hidden" name="_method" value="PATCH")
     +submit(user)(value=t('views.users.edit'))

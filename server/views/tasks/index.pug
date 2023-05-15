@@ -9,11 +9,11 @@ block content
       +formFor()(action=route('tasks') method='get')
         .row 
           .col-12.col-md
-            +select(status, taskStatuses, 'status', errors, 'Статус', 'filter')
+            +select(status, taskStatuses, 'status', errors, t('views.tasks.status'), 'filter')
           .col-12.col-md
-            +select(executor, users, 'executor', errors, 'Исполнитель', 'filter')
+            +select(executor, users, 'executor', errors, t('views.tasks.executor'), 'filter')
           .col-12.col-md
-            +select(label, labels, 'label', errors, 'Метка', 'filter')
+            +select(label, labels, 'label', errors, t('views.tasks.label'), 'filter')
         .form-check.mb-3
           if (isCreatorUser)
             input(type="checkbox" name="isCreatorUser" id="data_isCreatorUser" class="form-check-input" checked)

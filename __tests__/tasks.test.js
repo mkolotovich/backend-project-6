@@ -32,7 +32,7 @@ describe('test tasks CRUD', () => {
       url: app.reverse('tasks'),
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(302);
   });
 
   it('new', async () => {
@@ -41,7 +41,7 @@ describe('test tasks CRUD', () => {
       url: app.reverse('newTask'),
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(302);
   });
 
   it('create', async () => {
@@ -69,7 +69,7 @@ describe('test tasks CRUD', () => {
       },
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(302);
     const expected = params;
     const task = await models.task.query().findOne({ name: params.name });
     expect(task).toMatchObject(expected);

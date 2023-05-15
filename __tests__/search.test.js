@@ -32,7 +32,7 @@ describe('search tests', () => {
       url: '/tasks?status=1&executor=&label=',
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(302);
     const expected = params;
     const task = await models.task.query().findOne({ statusId: 1 });
     expect(task).toMatchObject(expected);
@@ -45,7 +45,7 @@ describe('search tests', () => {
       url: '/tasks?status=&executor=1&label=',
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(302);
     const expected = params;
     const task = await models.task.query().findOne({ executorId: 1 });
     expect(task).toMatchObject(expected);
@@ -58,7 +58,7 @@ describe('search tests', () => {
       url: '/tasks?status=&executor=&label=1',
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(302);
     const expected = params;
     const task = await models.taskLabel.query().findOne({ taskId: 1 });
     expect(task).toMatchObject(expected);

@@ -84,58 +84,6 @@ describe('test users CRUD', () => {
     expect(user).toMatchObject(expected);
   });
 
-  // it('update', async () => {
-  //   const params = testData.users.updated;
-  //   const response = await app.inject({
-  //     method: 'PATCH',
-  //     url: '/users/2',
-  //     payload: {
-  //       data: params,
-  //     },
-  //   });
-
-  //   // expect(response.statusCode).toBe(200);
-  //   const expected = {
-  //     ..._.omit(params, 'password'),
-  //     passwordDigest: encrypt(params.password),
-  //   };
-  //   const user = await models.user.query().findOne({ id: 2 });
-  //   console.log(user);
-  //   expect(user).toMatchObject(expected);
-  // });
-
-  // it('delete', async () => {
-  //   const paramsExisting = testData.users.new;
-  //   const responseExisting = await app.inject({
-  //     method: 'GET',
-  //     url: '/users/:id/edit',
-  //     payload: {
-  //       data: paramsExisting,
-  //     },
-  //   });
-
-  //   expect(responseExisting.statusCode).toBe(302);
-
-  //   const params = testData.users.new;
-  //   const response = await app.inject({
-  //     method: 'DELETE',
-  //     url: '/users/:id',
-  //     payload: {
-  //       data: params,
-  //     },
-  //   });
-
-  //   expect(response.statusCode).toBe(302);
-  //   const expected = {
-  //     ..._.omit(params, 'password'),
-  //     passwordDigest: encrypt(params.password),
-  //   };
-  //   // const user = await models.user.query().findOne({ email: params.email });
-  //   const user = await models.user.query().findOne({ email: paramsExisting.email });
-  //   console.log(user);
-  //   expect(user).toMatchObject(expected);
-  // });
-
   afterEach(async () => {
     await knex('users').truncate();
   });

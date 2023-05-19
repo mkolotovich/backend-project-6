@@ -76,50 +76,6 @@ describe('test labels CRUD', () => {
     expect(label).toMatchObject(expected);
   });
 
-  // it('update', async () => {
-  //   const params = testData.labels.updated;
-  //   const response = await app.inject({
-  //     method: 'PATCH',
-  //     url: '/labels/2',
-  //     payload: {
-  //       data: params,
-  //     },
-  //   });
-
-  //   expect(response.statusCode).toBe(302);
-  //   const expected = params;
-  //   const label = await models.label.query().findOne({ id: 2 });
-  //   expect(label).toMatchObject(expected);
-  // });
-
-  // it('delete', async () => {
-  //   const paramsExisting = testData.labels.new;
-  //   const responseExisting = await app.inject({
-  //     method: 'GET',
-  //     url: '/labels/1/edit',
-  //     payload: {
-  //       data: paramsExisting,
-  //     },
-  //   });
-
-  //   expect(responseExisting.statusCode).toBe(302);
-
-  //   const params = testData.labels.new;
-  //   const response = await app.inject({
-  //     method: 'DELETE',
-  //     url: '/labels/2',
-  //     payload: {
-  //       data: params,
-  //     },
-  //   });
-
-  //   expect(response.statusCode).toBe(302);
-  //   const expected = undefined;
-  //   const label = await models.label.query().findOne({ id: 2 });
-  //   console.log(label);
-  //   expect(label).toBe(expected);
-  // });
-
   afterEach(async () => {
     await knex('labels').truncate();
   });
